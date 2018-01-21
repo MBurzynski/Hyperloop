@@ -8,8 +8,14 @@ Zadania::Zadania(QWidget *parent) :
     ui->setupUi(this);
 
     qmodel=new QSqlQueryModel();
-    ui->tableViewZadania->setModel(qmodel);
+    m = new QSortFilterProxyModel();
+    m->setDynamicSortFilter(true);
+    m->setSourceModel(qmodel);
+    ui->tableViewZadania->setModel(m);
     ui->tableViewZadania->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->tableViewZadania->horizontalHeader()->setSectionsClickable(true);
+    ui->tableViewZadania->horizontalHeader()->setSortIndicatorShown(true);
+    ui->tableViewZadania->setSortingEnabled(true);
 
     //Wypełnienie listy comboBoxMiejscowosci danymi z bazy
     QString zapytanieMiejscowosci = "SELECT NAZWA FROM MIEJSCOWOSCI";
@@ -58,6 +64,7 @@ Zadania::~Zadania()
 {
     delete ui;
     delete qmodel;
+    delete m;
 }
 
 void Zadania::on_checkBoxUwzglednijDate_clicked(bool checked)
@@ -125,7 +132,7 @@ void Zadania::on_checkBoxStacja_clicked(bool checked)
 
 void Zadania::on_pushButtonWyszukajWszystko_clicked()
 {
-    QString zapytanie =  "SELECT z.NAZWA, z.STATUS, z.PRIORYTET, z.BUDZET, z.ZLECENIODAWCA, z.TRUDNOSC, z.KOSZTA, z.RODZAJ, z.OPIS, kz.NAZWA AS KATEGORIA_ZADANIA, m.NAZWA AS MIEJSCOWOŚĆ, T.DATA as DATA_ZADANIA FROM ZADANIA AS Z JOIN kategoria_zadania as KZ using(ID_KATEGORII) left JOIN stacje as S USING (ID_STACJI) left JOIN miejscowosci as M on(s.ID_MIASTA=m.ID_MIASTA) LEFT JOIN terminy as T USING(ID_TERMINU)";
+    QString zapytanie =  "SELECT z.ID_ZADANIA as NUMER_ZADANIA, z.NAZWA, z.STATUS, ZES.NAZWA AS ZESPOL, z.PRIORYTET, z.BUDZET, z.ZLECENIODAWCA, z.TRUDNOSC, z.KOSZTA, z.RODZAJ, z.OPIS, kz.NAZWA AS KATEGORIA_ZADANIA, m.NAZWA AS MIEJSCOWOŚĆ, s.NAZWA AS STACJA, T.DATA as DATA_ZADANIA FROM ZADANIA AS Z JOIN kategoria_zadania as KZ using(ID_KATEGORII) left JOIN stacje as S USING (ID_STACJI) left JOIN miejscowosci as M on(s.ID_MIASTA=m.ID_MIASTA) LEFT JOIN terminy as T USING(ID_TERMINU) LEFT JOIN ZESPOLY_WSZYSTKIE AS ZES ON(Z.ID_ZESPOLU=ZES.ID_ZESPOLU)";
 
     qmodel->setQuery(zapytanie);
 
@@ -169,17 +176,18 @@ void Zadania::odswiez()
     }
 
 
-    QString zapytanie =  "SELECT z.NAZWA, z.STATUS, z.PRIORYTET, z.BUDZET, z.ZLECENIODAWCA, z.TRUDNOSC, z.KOSZTA,\
- z.RODZAJ, z.OPIS, kz.NAZWA AS KATEGORIA_ZADANIA, m.NAZWA AS MIEJSCOWOŚĆ, T.DATA as DATA_ZADANIA\
+    QString zapytanie =  "SELECT z.ID_ZADANIA as NUMER_ZADANIA, z.NAZWA, z.STATUS, ZES.NAZWA AS ZESPOL,  z.PRIORYTET, z.BUDZET, z.ZLECENIODAWCA, z.TRUDNOSC, z.KOSZTA,\
+ z.RODZAJ, z.OPIS, kz.NAZWA AS KATEGORIA_ZADANIA, m.NAZWA AS MIEJSCOWOŚĆ, s.NAZWA AS STACJA, T.DATA as DATA_ZADANIA\
  FROM ZADANIA AS Z JOIN kategoria_zadania as KZ using(ID_KATEGORII) left JOIN stacje as S USING (ID_STACJI)\
- left JOIN miejscowosci as M on(s.ID_MIASTA=m.ID_MIASTA) LEFT JOIN terminy as T USING(ID_TERMINU)\
+ left JOIN miejscowosci as M on(s.ID_MIASTA=m.ID_MIASTA) LEFT JOIN terminy as T  USING(ID_TERMINU)\
+ LEFT JOIN ZESPOLY_WSZYSTKIE AS ZES ON(Z.ID_ZESPOLU=ZES.ID_ZESPOLU)\
  WHERE (" + miejscowosc + ") AND (" + stacja + ") AND (" + kategoriaZadania + ")\
  AND (T.DATA >= '" + dataPoczatkowaString + "' AND T.DATA <= '" + dataKoncowaString + "' )";
 
     qDebug()<<zapytanie;
     qmodel->setQuery(zapytanie);
-    ui->tableViewZadania->setColumnWidth(0, 200); //Żeby się mieściło
-    ui->tableViewZadania->setColumnWidth(9, 140);
+    ui->tableViewZadania->setColumnWidth(1, 200); //Żeby się mieściło
+    ui->tableViewZadania->setColumnWidth(10, 140);
 }
 
 void Zadania::on_comboBoxKategoriaZadania_currentTextChanged(const QString &arg1)

@@ -46,6 +46,7 @@ private slots:
 private:
     Ui::Zadania *ui;
     QSqlQueryModel *qmodel;
+    QSortFilterProxyModel *m;
 };
 
 #endif // ZADANIA_H

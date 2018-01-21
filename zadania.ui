@@ -180,6 +180,9 @@
      <item row="5" column="0" colspan="2">
       <widget class="QTableView" name="tableViewZadania"/>
      </item>
+     <item row="4" column="0">
+      <layout class="QHBoxLayout" name="horizontalLayout_7"/>
+     </item>
     </layout>
    </item>
   </layout>
