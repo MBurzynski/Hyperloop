@@ -2,6 +2,7 @@
 #define PRACOWNICY_H
 
 #include <QWidget>
+#include <QtSql>
 
 namespace Ui {
 class Pracownicy;
@@ -17,6 +18,7 @@ public:
 
 private:
     Ui::Pracownicy *ui;
+    QSqlQueryModel *qmodel;
 };
 
 #endif // PRACOWNICY_H

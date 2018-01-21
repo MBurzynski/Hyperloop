@@ -6,6 +6,10 @@ Pracownicy::Pracownicy(QWidget *parent) :
     ui(new Ui::Pracownicy)
 {
     ui->setupUi(this);
+
+    qmodel=new QSqlQueryModel();
+    ui->tableViewPracownicy->setModel(qmodel);
+    ui->tableViewPracownicy->setSelectionBehavior(QAbstractItemView::SelectRows);
 }
 
 Pracownicy::~Pracownicy()

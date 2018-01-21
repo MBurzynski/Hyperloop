@@ -2,6 +2,7 @@
 #define ZESPOLY_H
 
 #include <QWidget>
+#include <QtSql>
 
 namespace Ui {
 class Zespoly;
@@ -17,6 +18,7 @@ public:
 
 private:
     Ui::Zespoly *ui;
+    QSqlQueryModel *qmodel;
 };
 
 #endif // ZESPOLY_H

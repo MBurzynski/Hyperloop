@@ -9,7 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //Nawiązanie połączenia z bazą
     db = QSqlDatabase::addDatabase("QMYSQL");
     db.setHostName("127.0.0.1");
-    db.setDatabaseName("hyperloop_harmonogram_obslugi_v1");
+    db.setDatabaseName("hyperloop");
     db.setUserName("root");
     db.setPassword("");
 
